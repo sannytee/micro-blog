@@ -21,16 +21,26 @@ def register():
         return redirect(url_for('general.main'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-        )
-        user.set_password(form.password.data)
-        db.session.add(user)
-        db.session.commit()
-        login_user(user, remember=False)
-        flash('Account created successfully')
-        return redirect(url_for('general.main'))
+        user = User.query.filter(
+            (User.username == form.username.data) |
+            (User.email == form.email.data)
+        ).first()
+        if user is None:
+            user = User(
+                username=form.username.data,
+                email=form.email.data,
+            )
+            user.set_password(form.password.data)
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, remember=False)
+            flash('Account created successfully', 'alert-info')
+            return redirect(url_for('general.main'))
+        if user.username == form.username.data:
+            flash('username already exist', 'alert-danger')
+        if user.email == form.email.data:
+            flash('email already exist', 'alert-danger ')
+        return redirect(url_for('auth.register'))
     return render_template('auth/register.html', title='Register', form=form)
 
 
@@ -42,7 +52,7 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash('Invalid username or password', 'alert-danger')
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
