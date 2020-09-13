@@ -107,4 +107,25 @@ $(document).ready(function() {
       });
     });
   }
+
+  console.log('ready');
+  require(['moment'], function (moment){
+    moment.locale('en');
+    function flask_moment_render(elem) {
+      elem.innerHTML = eval('moment("' + elem.dataset.timestamp + '").' + elem.dataset.format + ';');
+      elem.classList.remove('flask-moment')
+      elem.style.display = 'inline';
+    }
+    function flask_moment_render_all() {
+      const elems = Array.from(document.getElementsByClassName('flask-moment'));
+      for (let i = 0; i < elems.length; i++) {
+        const elem = elems[i];
+        flask_moment_render(elem);
+        if (elem.dataset.refresh > 0) {
+          setInterval(function() { flask_moment_render(this); }.bind(elem), parseInt(elem.dataset.refresh));
+        }
+      }
+    }
+    flask_moment_render_all();
+  })
 });

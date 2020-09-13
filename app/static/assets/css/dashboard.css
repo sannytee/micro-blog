@@ -11864,8 +11864,7 @@ body.fixed-header .header {
 
 .nav-unread {
   position: absolute;
-  top: .25rem;
-  right: .25rem;
+  top: 1rem;
   background: #cd201f;
   width: .5rem;
   height: .5rem;
@@ -20343,4 +20342,17 @@ svg {
 
 .fe-zoom-out:before {
   content: "\ea06";
+}
+
+.float-btn{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:80px;
+	right:40px;
+	background-color: #467fcf;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
 }
