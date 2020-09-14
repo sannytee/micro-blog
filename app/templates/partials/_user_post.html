@@ -1,0 +1,14 @@
+<li class="list-group-item py-5">
+    <div class="media">
+        <div class="media-object avatar avatar-md mr-4" style="background-image: url({{ user.avatar(256) }})"></div>
+        <div class="media-body">
+            <div class="media-heading">
+                <small class="float-right text-muted">{{ moment(post.timestamp).fromNow() }}</small>
+                <h5>{{ user.username }}</h5>
+            </div>
+            <div>
+                {{ post.body }}
+            </div>
+        </div>
+    </div>
+</li>
