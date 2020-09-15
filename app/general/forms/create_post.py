@@ -6,6 +6,6 @@ from wtforms.validators import DataRequired, Length
 class CreatePostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     post = TextAreaField('Post', validators=[
-        DataRequired(), Length(min=3, max=140)
+        Length(min=3, max=140)
     ])
     submit = SubmitField('Submit')

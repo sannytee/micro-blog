@@ -29,6 +29,7 @@ def main():
             db.session.commit()
             flash('Post successfully created', 'alert-success')
             return redirect(url_for('general.main'))
+        print('>>>>>>>>>>', form.errors)
         page = request.args.get('page', 1, type=int)
         posts = current_user.followed_posts().paginate(
             page, 6, False

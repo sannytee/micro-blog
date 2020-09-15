@@ -4,7 +4,7 @@
             <h4><a href="#">{{post.title}}</a></h4>
             <div class="text-muted">{{post.body}}</div>
             <div class="d-flex align-items-center pt-5 mt-auto">
-                <div class="avatar avatar-md mr-3" style="background-image: url(/static/images/faces/icon.jpg)"></div>
+                <div class="avatar avatar-md mr-3" style="background-image: url({{ post.author.avatar(256) }})"></div>
                 <div>
                     <a href="{{ url_for('general.user', username=post.author.username) }}" class="text-default">{{ post.author.username }}</a>
                     <small class="d-block text-muted">
