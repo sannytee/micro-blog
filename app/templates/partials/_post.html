@@ -6,7 +6,7 @@
             <div class="d-flex align-items-center pt-5 mt-auto">
                 <div class="avatar avatar-md mr-3" style="background-image: url(/static/images/faces/icon.jpg)"></div>
                 <div>
-                    <a href="#" class="text-default">{{ post.author.username }}</a>
+                    <a href="{{ url_for('general.user', username=post.author.username) }}" class="text-default">{{ post.author.username }}</a>
                     <small class="d-block text-muted">
                         {{ moment(post.timestamp).fromNow() }}
                     </small>

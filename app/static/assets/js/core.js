@@ -108,7 +108,6 @@ $(document).ready(function() {
     });
   }
 
-  console.log('ready');
   require(['moment'], function (moment){
     moment.locale('en');
     function flask_moment_render(elem) {

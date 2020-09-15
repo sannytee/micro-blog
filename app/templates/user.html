@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+    <div class="page">
+        <div class="flex-fill">
+            {%  include 'partials/header_content.html' %}
+            <div class="my-3 my-md-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card card-profile">
+                                <div class="card-header" style="background-image: url(/static/images/eberhard-grossgasteiger-311213-500.jpg);"></div>
+                                <div class="card-body text-center">
+                                    <img class="card-profile-img" src="{{ user.avatar(256) }}">
+                                    <h3 class="mb-3">{{ user.username }}</h3>
+                                    <p class="mb-4">
+                                        {% if not user.bio %}
+                                            No bio provided
+                                        {% else %}
+                                            {{ user.bio }}
+                                        {% endif %}
+                                    </p>
+                                    <p class="mb-4">
+                                        {{ user.followers.count() }} followers, {{ user.followed.count() }} following.
+                                    </p>
+                                    {% if current_user != user %}
+                                        <p class="mb-4">
+                                            Last seen on: {{ moment(user.last_seen).format('LLL') }}
+                                        </p>
+                                        {% if not current_user.is_following(user) %}
+                                            <form action="{{ url_for('general.follow', username=user.username) }}" method="post">
+                                                {{ follow_form.hidden_tag() }}
+                                                {{ follow_form.submit(value='Follow', class='btn btn-outline-primary btn-sm') }}
+                                            </form>
+                                        {% else %}
+                                            <form action="{{ url_for('general.unfollow', username=user.username) }}" method="post">
+                                                {{ follow_form.hidden_tag() }}
+                                                {{ follow_form.submit(value='Unfollow', class='btn btn-outline-primary btn-sm') }}
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if user == current_user %}
+                                <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Edit Profile</h3>
+                                </div>
+                                <div class="card-body">
+                                    {% include "partials/_edit_profile_form.html" %}
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Message">
+                                        <div class="input-group-append">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fe fe-send"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ul class="list-group card-list-group">
+                                    {% for post in posts %}
+                                        {% include "partials/_user_post.html" %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% include "partials/_pagination.html" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include 'partials/_create_post_form.html' %}
+        </div>
+        {% include 'partials/footer.html' %}
+    </div>
+{% endblock %}
