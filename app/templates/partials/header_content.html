@@ -4,7 +4,6 @@
             <a class="header-brand" href="../index.html">
                 Microblog
             </a>
-            {% if authenticated %}
                 <div class="d-flex order-lg-2 ml-auto">
                     <div class="dropdown">
                         <a href="#" class="nav-link pr-0 leading-none" data-toggle="dropdown">
@@ -31,11 +30,6 @@
                 <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0 collapsed" data-toggle="collapse" data-target="#headerMenuCollapse" aria-expanded="false">
                     <span class="header-toggler-icon"></span>
                 </a>
-            {% else %}
-                <a href="#" class="header-toggler ml-auto d-lg-none ml-3 ml-lg-0 collapsed" data-toggle="collapse" data-target="#headerMenuCollapse" aria-expanded="false">
-                    <span class="header-toggler-icon"></span>
-                </a>
-            {% endif %}
         </div>
     </div>
 </div>
@@ -66,8 +60,7 @@
                             <a href="{{ url_for('general.explore') }}" class="nav-link"><i class="fe fe-hash"></i> Explore</a>
                         {% endif %}
                     </li>
-                    {% if authenticated %}
-                        <li class="nav-item">
+                    <li class="nav-item">
                         {%  if title == 'Notification' %}
                             <a class="nav-link active">
                                 <i class="fe fe-bell"></i>
@@ -82,7 +75,6 @@
                             </a>
                         {% endif %}
                     </li>
-                    {% endif %}
                 </ul>
             </div>
         </div>
