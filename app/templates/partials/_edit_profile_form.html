@@ -1,5 +1,5 @@
 <form action="{{ url_for('general.edit_profile') }}" method="post">
-    {{ form.hidden_tag() }}
+    {{ edit_form.hidden_tag() }}
     <div class="form-group">
         {{ edit_form.bio.label(class="form-label") }}
         {{ edit_form.bio(class="form-control", rows=5) }}
@@ -7,6 +7,9 @@
     <div class="form-group">
         {{ edit_form.username.label(class="form-label") }}
         {{ edit_form.username(class="form-control") }}
+        {% for error in edit_form.username.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
     </div>
     <div class="form-footer">
         {{ edit_form.submit(class="btn btn-primary btn-block") }}

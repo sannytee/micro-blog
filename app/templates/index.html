@@ -6,11 +6,7 @@
             {%  include 'partials/header_content.html' %}
             <div class="container">
                 <div class="page-header">
-                    {% if authenticated %}
                         <h1>Welcome, {{ current_user.username }}</h1>
-                    {% else %}
-                        <h1>Welcome, Guest</h1>
-                    {% endif %}
                 </div>
                 <div class="row row-cards row-deck">
                     {% for post in posts %}
@@ -20,9 +16,7 @@
                 {% include "partials/_pagination.html" %}
             </div>
         </div>
-        {%  if authenticated %}
-            {% include "partials/_create_post_form.html" %}
-        {% endif %}
+        {% include "partials/_create_post_form.html" %}
         {% include 'partials/footer.html' %}
     </div>
 {% endblock %}
