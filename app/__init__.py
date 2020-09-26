@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
+from flask_mail import Mail
 
 from config import Config
 
@@ -10,6 +11,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 moment = Moment()
+mail = Mail()
 login.login_view = 'auth.login'
 
 
@@ -21,6 +23,7 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     moment.init_app(app)
+    mail.init_app(app)
 
     from app.auth import auth_bp
     from app.general import general_bp
