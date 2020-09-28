@@ -29,7 +29,6 @@ def main():
         form = CreatePostForm()
         if form.validate_on_submit():
             post = Post(
-                title=form.title.data,
                 body=form.post.data,
                 author=current_user
             )
