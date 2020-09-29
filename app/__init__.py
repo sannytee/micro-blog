@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_moment import Moment
 from flask_mail import Mail
+from elasticsearch import Elasticsearch
 
 from config import Config
 
@@ -24,6 +25,9 @@ def create_app(config_class=Config):
     login.init_app(app)
     moment.init_app(app)
     mail.init_app(app)
+
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
 
     from app.auth import auth_bp
     from app.general import general_bp
