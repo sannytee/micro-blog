@@ -12,14 +12,14 @@
             </div>
             <div class="modal-body">
                 <form class="card" action="{{ url_for('general.main') }}" method="post">
-                    {{ form.hidden_tag() }}
+                    {{ g.create_post_form.hidden_tag() }}
                     <div class="card-body p-6">
                         <div class="form-group">
-                            {{ form.post.label(class="form-label") }}
-                            {{ form.post(class="form-control", placeholder="Say something") }}
+                            {{ g.create_post_form.post.label(class="form-label") }}
+                            {{ g.create_post_form.post(class="form-control", placeholder="Say something") }}
                         </div>
                         <div class="form-footer">
-                            {{ form.submit(class="btn btn-primary btn-block") }}
+                            {{ g.create_post_form.submit(class="btn btn-primary btn-block") }}
                         </div>
                     </div>
                 </form>

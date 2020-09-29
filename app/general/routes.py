@@ -1,9 +1,9 @@
 from datetime import datetime
-from flask import render_template, url_for, redirect, request, flash
+from flask import render_template, url_for, redirect, request, flash, g, current_app
 from flask_login import current_user, login_required
 
 from app.general import general_bp
-from app.general.forms import CreatePostForm, EmptyForm, EditProfileForm
+from app.general.forms import CreatePostForm, EmptyForm, EditProfileForm, SearchForm
 from app.models import Post, User
 from app import db
 
@@ -13,6 +13,8 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
+        g.create_post_form = CreatePostForm()
 
 
 @general_bp.after_request
@@ -27,7 +29,7 @@ def set_response_header(response):
 def main():
     if current_user.is_authenticated:
         form = CreatePostForm()
-        if form.validate_on_submit():
+        if g.create_post_form.validate_on_submit():
             post = Post(
                 body=form.post.data,
                 author=current_user
@@ -55,7 +57,6 @@ def main():
 @general_bp.route('/explore')
 @login_required
 def explore():
-    form = CreatePostForm()
     page = request.args.get('page', 1, int)
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, 6, False
@@ -68,7 +69,7 @@ def explore():
 
     return render_template(
         'index.html', title='Explore', posts=posts.items, next_url=next_url,
-        prev_url=prev_url, form=form
+        prev_url=prev_url
     )
 
 
@@ -84,7 +85,6 @@ def user(username):
     prev_url = url_for('general.user', username=user_info.username, page=posts.prev_num) \
         if posts.has_prev else None
     follow_form = EmptyForm()
-    post_form = CreatePostForm()
     edit_form = EditProfileForm(current_user.username)
 
     edit_form.username.data = current_user.username
@@ -93,8 +93,7 @@ def user(username):
     return render_template(
         'user.html', title='Profile', posts=posts.items,
         user=user_info, next_url=next_url, prev_url=prev_url,
-        follow_form=follow_form, form=post_form,
-        edit_form=edit_form
+        follow_form=follow_form, edit_form=edit_form
     )
 
 
@@ -151,3 +150,19 @@ def edit_profile():
         for error in form.errors:
             flash(form.errors[error][0], 'alert-danger')
     return redirect(url_for('general.user', username=current_user.username))
+
+
+@general_bp.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('general.explore'))
+    page = request.args.get('page', 1, type=int)
+    posts, total = Post.search(g.search_form.q.data, page,
+                               current_app.config['POSTS_PER_PAGE'])
+    next_url = url_for('general.search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * current_app.config['POSTS_PER_PAGE'] else None
+    prev_url = url_for('general.search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+    return render_template('index.html', title='Explore', posts=posts,
+                           next_url=next_url, prev_url=prev_url)
