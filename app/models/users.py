@@ -9,6 +9,7 @@ from time import time
 
 from app import db, login
 from app.models.posts import Post
+from app.models.message import Message
 
 followers = db.Table(
     'followers',
@@ -32,6 +33,14 @@ class User(UserMixin, db.Model):
         backref=db.backref('followers', lazy='dynamic'),
         lazy='dynamic'
     )
+
+    messages_sent = db.relationship('Message',
+                                    foreign_keys='Message.sender_id',
+                                    backref='author', lazy='dynamic')
+    messages_received = db.relationship('Message',
+                                        foreign_keys='Message.recipient_id',
+                                        backref='recipient', lazy='dynamic')
+    last_message_read_time = db.Column(db.DateTime)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
@@ -86,6 +95,12 @@ class User(UserMixin, db.Model):
             return
 
         return User.query.get(id)
+
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1990, 1, 1)
+        return Message.query.filter_by(recipient=self).filter(
+            Message.timestamp > last_read_time
+        ).count()
 
     def __repr__(self):
         return f'<User {self.username}>'

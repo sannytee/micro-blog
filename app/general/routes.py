@@ -166,3 +166,9 @@ def search():
         if page > 1 else None
     return render_template('index.html', title='Explore', posts=posts,
                            next_url=next_url, prev_url=prev_url)
+
+
+@general_bp.route('/chats')
+@login_required
+def messages():
+    return render_template('chat.html', title='Messages')

@@ -1,0 +1,164 @@
+.side-f {
+    display: none;
+}
+
+.side-m {
+    height: 100%;
+}
+
+.chat-avatar {
+    border-radius: 50%;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    width: 2.75rem;
+    min-width: 2.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.layout {
+    height: 100%;
+}
+
+.d-flex .user {
+    margin-right: 5%;
+}
+
+.m-chat {
+    margin-top: 10%;
+    scrollbar-width: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 70%;
+}
+
+.chat-users {
+    overflow-x: scroll;
+    scrollbar-width: none;
+}
+
+.chat-fill {
+    height: 90% !important;
+}
+
+.chat-contain {
+    height: 80% !important;
+}
+
+.chat-page {
+    height: 100% !important;
+}
+
+.message-content {
+    flex: 1;
+}
+
+.chat-card {
+    padding: 5%;
+    margin-bottom: 5%;
+    background-color: #fff;
+    border-radius: 1.5rem;
+}
+
+.d-flex .img-sec {
+    margin-right: 1rem;
+}
+
+.chat-text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-username, .chat-time  {
+    margin: 0;
+    padding: 0;
+}
+
+@media only screen and (min-width: 850px) {
+    .layout {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+    }
+
+    .side-f {
+        display: unset;
+        flex: 1;
+        background: #fff;
+        margin-left: 2%;
+    }
+
+    .messaging-body {
+        /*min-width: 0;*/
+        /*width: 100%;*/
+        height: 100%;
+        flex: 1;
+    }
+
+    .message-receiver-header {
+         border-bottom: 1px solid rgba(0, 40, 100, 0.12);
+        /*border-bottom: 1px solid rgb(251, 245, 245) !important;*/
+        margin: 1.2rem;
+        flex: 1;
+    }
+
+    .chat-content {
+        flex-grow: 1;
+        scrollbar-width: none;
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 500px;
+    }
+
+    .chat-left {
+        max-width: 45%;
+        margin: 1.5rem;
+    }
+
+    .chat-received {
+        background-color: #f5f7fb;
+        padding: 1.5rem;
+    }
+
+    .chat-received-time {
+        white-space: nowrap;
+        margin-left: 0.5rem;
+    }
+    .chat-sent-time {
+        white-space: nowrap;
+        margin-right: 0.5rem;
+        /*order: 1;*/
+        flex: 0;
+    }
+
+    .chat-divider {
+        margin: auto;
+        width: 50%;
+        padding: 1.5rem;
+        text-align: center;
+    }
+
+    .chat-right {
+        max-width: 55%;
+        margin: 1.5rem 1.5rem 1.5rem auto;
+    }
+
+    .sender {
+        margin-right: 1rem;
+        margin-left: 1rem;
+    }
+
+    .chat-send {
+        margin: 1.5rem;
+        width: unset !important;
+    }
+
+    textarea {
+        resize: none;
+        flex-grow: 2;
+    }
+
+    .chat-contain {
+        height: 80% !important;
+    }
+
+}
