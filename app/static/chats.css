@@ -87,6 +87,11 @@
         margin-left: 2%;
     }
 
+    .side-m {
+        height: 100%;
+        width: 40%;
+    }
+
     .messaging-body {
         /*min-width: 0;*/
         /*width: 100%;*/

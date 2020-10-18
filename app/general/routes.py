@@ -1,10 +1,15 @@
 from datetime import datetime
+from hashlib import md5
+
 from flask import render_template, url_for, redirect, request, flash, g, current_app
 from flask_login import current_user, login_required
+from sqlalchemy import *
+from sqlalchemy.orm import *
 
 from app.general import general_bp
 from app.general.forms import CreatePostForm, EmptyForm, EditProfileForm, SearchForm
-from app.models import Post, User
+from app.models import Post, User, Message
+from app.models.users import followers
 from app import db
 
 
@@ -171,4 +176,78 @@ def search():
 @general_bp.route('/chats')
 @login_required
 def messages():
-    return render_template('chat.html', title='Messages')
+    # get last messages sent or received
+    last_messages_obj = []
+    db_session = db.session
+    grouped_messages = db_session.query(
+        Message, func.rank().over(
+            partition_by=Message.conversation_id,
+            order_by=Message.timestamp.desc()
+        ).label("rank_number")
+    ).subquery()
+    last_messages = db_session.query(
+        Message
+    ).select_entity_from(grouped_messages).filter(
+        grouped_messages.c.rank_number == 1, or_(
+            grouped_messages.c.recipient_id == current_user.id,
+            grouped_messages.c.sender_id == current_user.id
+        )
+    )
+
+    recipients_id = []
+    for message in last_messages:
+        recipient_id = message.recipient_id
+        if message.recipient_id == current_user.id:
+            recipient_id = message.sender_id
+        recipients_id.append(recipient_id)
+
+    recipients = db_session.query(User).filter(User.id.in_(tuple(recipients_id)))
+    for recipient, message in zip(recipients, last_messages):
+        digest = md5(recipient.email.lower().encode('utf-8')).hexdigest()
+        recipient_image = f'https://www.gravatar.com/avatar/{digest}?d=identicon&s=250'
+        message_info = {
+            "image": recipient_image,
+            "username": recipient.username,
+            "message": message.body,
+            "time": message.timestamp
+        }
+        last_messages_obj.append(message_info)
+
+    # get user most-likely friends
+    followed = aliased(followers)
+    following = aliased(User)
+    friends = db_session.query(
+        case(
+            [
+                (
+                    following.username == current_user.username,
+                    User.username
+                )
+            ],
+            else_=following.username
+        ),
+        case(
+            [
+                (
+                    following.username == current_user.username,
+                    User.email
+                )
+            ],
+            else_=following.email
+        ),
+    ) \
+        .join(followed, followed.c.followed_id == User.id) \
+        .join(following, following.id == followed.c.follower_id) \
+        .filter(or_(followed.c.followed_id == current_user.id, followed.c.follower_id == current_user.id))
+
+    friend_obj = []
+    for friend in friends:
+        digest = md5(friend[1].lower().encode('utf-8')).hexdigest()
+        user_image = f'https://www.gravatar.com/avatar/{digest}?d=identicon&s=250'
+        data = {
+            'user_image': user_image,
+            'username': friend[0]
+        }
+        friend_obj.append(data)
+    return render_template('chat.html', title='Messages', last_messages=last_messages_obj, friends=friend_obj)
+
